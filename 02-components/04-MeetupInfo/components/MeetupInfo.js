@@ -32,19 +32,19 @@ export default defineComponent({
     },
   },
 
-  template: `
+  template: /* html */ `
     <ul class="meetup-info">
       <li>
         <img class="icon meetup-info__icon" alt="icon" src="/assets/icons/icon-user.svg" />
-        {{organizer}}
+        {{ organizer }}
       </li>
       <li>
         <img class="icon meetup-info__icon" alt="icon" src="/assets/icons/icon-map.svg" />
-        {{place}}
+        {{ place }}
       </li>
       <li>
         <img class="icon meetup-info__icon" alt="icon" src="/assets/icons/icon-cal-lg.svg" />
-        <time :datetime="isoDate">{{localeDate}}</time>
+        <time :datetime="isoDate">{{ localeDate }}</time>
       </li>
     </ul>`,
 });

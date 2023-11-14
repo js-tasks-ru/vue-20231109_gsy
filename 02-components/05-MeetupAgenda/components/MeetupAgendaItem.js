@@ -46,7 +46,7 @@ export default defineComponent({
           <span class="agenda-item__dot"></span>
           <span class="agenda-item__lang">{{ agendaItem.language }}</span>
         </p>
-        <p v-if="!!agendaItem.description">{{ agendaItem.description }}</p>
+        <p v-if="agendaItem.description">{{ agendaItem.description }}</p>
       </div>
     </div>`,
 });

@@ -11,5 +11,5 @@ export default defineComponent({
     },
   },
 
-  template: `<p class="meetup-description">{{description}}</p>`,
+  template: /* html */ `<p class="meetup-description">{{ description }}</p>`,
 });

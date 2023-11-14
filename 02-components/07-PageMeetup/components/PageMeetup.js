@@ -43,7 +43,7 @@ export default defineComponent({
     },
   },
 
-  template: /* xml */ `
+  template: /* html */ `
     <div class="page-meetup">
       <MeetupView v-if="meetup" :meetup="meetup"/>
 
