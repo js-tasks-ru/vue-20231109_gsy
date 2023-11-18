@@ -24,29 +24,23 @@ export default {
   position: relative;
 }
 
-/* .fade-list > *  */
-/* :slotted(*) Должно быть, но не работает. */
-:deep(*) {
+.fade-list > :deep(*) {
   opacity: 1;
-  transition: opacity 0.3s ease-out;
+  transition: opacity .3s ease-out;
 }
 
-/* .fade-list .fade-list-leave-active, */
-:deep(.fade-list-leave-active) {
+.fade-list :deep(.fade-list-leave-active) {
   position: absolute !important;
   left: 0;
   right: 0;
 }
 
-/* .fade-list .fade-list-enter-from, */
-/* .fade-list .fade-list-leave-to, */
-:deep(.fade-list-enter-from),
-:deep(.fade-list-leave-to) {
+.fade-list :deep(.fade-list-enter-from),
+.fade-list :deep(.fade-list-leave-to) {
   opacity: 0;
 }
 
-/* .fade-list .fade-list-move, */
-:deep(.fade-list-move) {
-  transition: transform 0.3s;
+.fade-list :deep(.fade-list-move) {
+  transition: transform .3s;
 }
 </style>
