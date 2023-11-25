@@ -2,7 +2,7 @@
   <div class="calendar-view__cell" :class="{ 'calendar-view__cell_inactive': !active }" tabindex="0">
     <div class="calendar-view__cell-day">{{ text }}</div>
     <div class="calendar-view__cell-content">
-      <CalendarEvent v-for="evt in events"
+      <CalendarEvent v-for="evt in dayEvents"
         :key="evt.id"
         :code="evt.id"
         :date="evt.date"
@@ -41,6 +41,11 @@
         let opt = { day: 'numeric' };
         return dat.toLocaleDateString(lng, opt);
       },
+
+      dayEvents() {
+        let dat = new Date(this.date).toLocaleDateString();
+        return this.events.filter(e => dat === new Date(e.date).toLocaleDateString());
+      }
     },
   };
 </script>

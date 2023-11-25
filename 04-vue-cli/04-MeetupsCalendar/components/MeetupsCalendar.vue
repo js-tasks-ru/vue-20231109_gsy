@@ -7,7 +7,7 @@
         :key="idx"
         :date="cell.date"
         :active="cell.active"
-        :events="cell.events"/>
+        :events="monthEvents"/>
     </div>
   </div>
 </template>
@@ -38,15 +38,6 @@
       };
     },
 
-    watch: {
-      meetups: {
-        deep: true,
-        handler() {
-          this.distributeEvents();
-        },
-      },
-    },
-
     computed: {
       cells() {
         let date = new Date(this.year, this.month, 0);
@@ -64,34 +55,18 @@
           clls.push({
             date: dat.getTime(),
             active: act,
-            events: null,
           });
         }
 
-        this.distributeEvents(clls);
         return clls.reverse();
       },
 
       monthEvents() {
         return this.meetups.filter(evt => {
-          let thatY = new Date(evt.date).getFullYear() === this.year;
-          let thatM = new Date(evt.date).getMonth() + 1 === this.month;
+          let evtD = new Date(evt.date);
+          let thatY = evtD.getFullYear() === this.year;
+          let thatM = evtD.getMonth() + 1 === this.month;
           return thatY && thatM;
-        });
-      },
-    },
-
-    methods: {
-      distributeEvents(cells, events) {
-        cells = cells || this.cells.filter(c => c.active);
-        events = events || this.monthEvents;
-
-        cells.forEach(cell => {
-          cell.events = events.filter(event => {
-            let cD = new Date(cell.date).toLocaleDateString();
-            let eD = new Date(event.date).toLocaleDateString();
-            return cD === eD;
-          });
         });
       },
     },
