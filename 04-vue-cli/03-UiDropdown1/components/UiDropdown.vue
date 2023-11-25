@@ -1,18 +1,22 @@
 <template>
-  <div class="dropdown dropdown_opened">
-    <button type="button" class="dropdown__toggle dropdown__toggle_icon">
-      <UiIcon icon="tv" class="dropdown__icon" />
-      <span>Title</span>
+  <div class="dropdown" :class="{ dropdown_opened: opened }">
+    <button class="dropdown__toggle" :class="{ dropdown__toggle_icon: iconed }" @click="onClick">
+      <UiIcon v-if="option?.icon" :icon="option.icon" class="dropdown__icon" />
+      <span>{{ option?.text || title }}</span>
     </button>
 
-    <div class="dropdown__menu" role="listbox">
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <UiIcon icon="tv" class="dropdown__icon" />
-        Option 1
-      </button>
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <UiIcon icon="tv" class="dropdown__icon" />
-        Option 2
+    <div v-show="opened" class="dropdown__menu" role="listbox">
+      <button
+        v-for="opt in options"
+        class="dropdown__item"
+        role="option"
+        type="button"
+        :key="opt.value"
+        :class="{ dropdown__item_icon: iconed }"
+        @click="onClickOption(opt)"
+      >
+        <UiIcon v-if="opt.icon" :icon="opt.icon" class="dropdown__icon" />
+        <span>{{ opt.text }}</span>
       </button>
     </div>
   </div>
@@ -25,6 +29,50 @@ export default {
   name: 'UiDropdown',
 
   components: { UiIcon },
+
+  emits: ['update:modelValue'],
+
+  props: {
+    title: {
+      type: String,
+      required: true,
+    },
+    options: {
+      type: Array,
+      required: true,
+    },
+    modelValue: {
+      type: String,
+      default: '',
+    },
+  },
+
+  data() {
+    return {
+      opened: false,
+    };
+  },
+
+  computed: {
+    iconed() {
+      return this.options.some((opt) => !!opt.icon);
+    },
+
+    option() {
+      return this.options.find((opt) => opt.value === this.modelValue);
+    },
+  },
+
+  methods: {
+    onClick() {
+      this.opened = !this.opened;
+    },
+
+    onClickOption(opt) {
+      this.opened = false;
+      this.$emit('update:modelValue', opt.value);
+    },
+  },
 };
 </script>
 
