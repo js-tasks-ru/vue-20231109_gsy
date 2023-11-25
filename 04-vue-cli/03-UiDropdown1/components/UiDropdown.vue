@@ -50,38 +50,16 @@ export default {
   data() {
     return {
       opened: false,
-      option: null,
     };
-  },
-
-  watch: {
-    modelValue: {
-      immediate: true,
-      handler(nv) {
-        if (!nv) this.option = null;
-        else {
-          this.option = this.options.find((opt) => opt.value === nv);
-          if (!this.option) throw new Error('unknown option');
-        }
-      },
-    },
-
-    options: {
-      immediate: true,
-      deep: true,
-      handler() {
-        if (!this.option) return;
-        if (!this.options.includes(this.option)) {
-          this.option = null;
-          this.$emit('update:modelValue', '');
-        }
-      },
-    },
   },
 
   computed: {
     iconed() {
       return this.options.some((opt) => !!opt.icon);
+    },
+
+    option() {
+      return this.options.find((opt) => opt.value === this.modelValue);
     },
   },
 
