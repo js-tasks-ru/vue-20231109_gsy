@@ -50,7 +50,6 @@ export default {
   data() {
     return {
       opened: false,
-      iconed: false,
       option: null,
     };
   },
@@ -71,14 +70,18 @@ export default {
       immediate: true,
       deep: true,
       handler() {
-        this.iconed = this.options.some((opt) => !!opt.icon);
-
         if (!this.option) return;
         if (!this.options.includes(this.option)) {
           this.option = null;
           this.$emit('update:modelValue', '');
         }
       },
+    },
+  },
+
+  computed: {
+    iconed() {
+      return this.options.some((opt) => !!opt.icon);
     },
   },
 
