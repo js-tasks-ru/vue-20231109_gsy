@@ -1,8 +1,12 @@
 <template>
   <h1 class="logo">
-    <a href="/" class="logo__link"
-      ><img src="@/assets/logo.svg" alt="Meetups" class="logo__image" width="174" height="30"
-    /></a>
+    <RouterLink class="logo__link" :to="{name: 'index'}">
+      <img class="logo__image"
+        src="@/assets/logo.svg"
+        alt="Meetups"
+        width="174"
+        height="30"/>
+    </RouterLink>
   </h1>
 </template>
 
