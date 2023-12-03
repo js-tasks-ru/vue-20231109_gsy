@@ -1,13 +1,22 @@
 <template>
-  <div class="input-group input-group_icon input-group_icon-left input-group_icon-right">
-    <div class="input-group__icon">
-      <img class="icon" alt="icon" />
+  <div class="input-group" :class="wrapperClasses">
+    <div v-if="$slots['left-icon']" class="input-group__icon">
+      <slot name="left-icon" class="icon" alt="icon" />
     </div>
 
-    <input ref="input" class="form-control form-control_rounded form-control_sm" />
+    <component
+      class="form-control"
+      ref="input"
+      v-bind="$attrs"
+      :is="multiline ? 'textarea' : 'input'"
+      :class="inputClasses"
+      :value="modelValue"
+      @input="onInput"
+      @change="onChange"
+    />
 
-    <div class="input-group__icon">
-      <img class="icon" alt="icon" />
+    <div v-if="$slots['right-icon']" class="input-group__icon">
+      <slot name="right-icon" class="icon" alt="icon" />
     </div>
   </div>
 </template>
@@ -15,6 +24,81 @@
 <script>
 export default {
   name: 'UiInput',
+  inheritAttrs: false,
+
+  emits: ['update:modelValue'],
+
+  props: {
+    modelValue: {
+      type: String,
+      default: '',
+    },
+
+    modelModifiers: {
+      default: () => ({}),
+    },
+
+    small: {
+      type: Boolean,
+      default: false,
+    },
+
+    rounded: {
+      type: Boolean,
+      default: false,
+    },
+
+    multiline: {
+      type: Boolean,
+      default: false,
+    },
+  },
+
+  data() {
+    return {
+      wrapperClasses: [],
+    };
+  },
+
+  computed: {
+    inputClasses() {
+      const clss = [];
+      if (this.small) clss.push('form-control_sm');
+      if (this.rounded) clss.push('form-control_rounded');
+      return clss;
+    },
+  },
+
+  methods: {
+    onInput(evt) {
+      if (this.modelModifiers.lazy) return;
+      this.$emit('update:modelValue', evt.target.value);
+    },
+
+    onChange(evt) {
+      this.$emit('update:modelValue', evt.target.value);
+    },
+
+    focus() {
+      this.$refs.input.focus();
+    },
+
+    computeWrapperClasses() {
+      const clss = [];
+      if (this.$slots['left-icon']) clss.push('input-group_icon-left');
+      if (this.$slots['right-icon']) clss.push('input-group_icon-right');
+      if (clss.length) clss.push('input-group_icon');
+      return clss;
+    },
+  },
+
+  created() {
+    this.wrapperClasses = this.computeWrapperClasses();
+  },
+
+  updated() {
+    this.wrapperClasses = this.computeWrapperClasses();
+  },
 };
 </script>
 
