@@ -11,8 +11,7 @@
       :is="multiline ? 'textarea' : 'input'"
       :class="inputClasses"
       :value="modelValue"
-      @input="onInput"
-      @change="onChange"
+      @[updateEvent]="$emit('update:modelValue', $event.target.value)"
     />
 
     <div v-if="$slots['right-icon']" class="input-group__icon">
@@ -61,6 +60,10 @@ export default {
   },
 
   computed: {
+    updateEvent() {
+      return this.modelModifiers.lazy ? 'change' : 'input';
+    },
+
     inputClasses() {
       const clss = [];
       if (this.small) clss.push('form-control_sm');
@@ -70,15 +73,6 @@ export default {
   },
 
   methods: {
-    onInput(evt) {
-      if (this.modelModifiers.lazy) return;
-      this.$emit('update:modelValue', evt.target.value);
-    },
-
-    onChange(evt) {
-      this.$emit('update:modelValue', evt.target.value);
-    },
-
     focus() {
       this.$refs.input.focus();
     },
