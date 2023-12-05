@@ -16,7 +16,7 @@ export default {
 
   props: {
     tag: {
-      type: String,
+      type: [String, Object, Function],
       default: 'button'
     },
 
