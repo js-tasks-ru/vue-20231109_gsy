@@ -106,10 +106,10 @@
     } catch (err) {
       input.value.value = '';
       emit('error', err);
-    } finally {
-      image.value = resp?.image;
-      busy.value = false;
     }
+
+    image.value = resp?.image;
+    busy.value = false;
   }
 
   // Удалить выбранный файл.
