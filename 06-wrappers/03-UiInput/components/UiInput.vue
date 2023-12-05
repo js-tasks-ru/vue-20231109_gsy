@@ -1,15 +1,22 @@
 <template>
-  <div class="input-group" :class="wrapperClasses">
+  <div class="input-group" :class="{
+      'input-group_icon': $slots['left-icon'] || $slots['right-icon'],
+      'input-group_icon-left': $slots['left-icon'],
+      'input-group_icon-right': $slots['right-icon'],
+    }">
+
     <div v-if="$slots['left-icon']" class="input-group__icon">
       <slot name="left-icon" class="icon" alt="icon" />
     </div>
 
-    <component
-      class="form-control"
+    <component class="form-control"
+      :class="{
+        'form-control_rounded': rounded,
+        'form-control_sm': small,
+      }"
       ref="input"
       v-bind="$attrs"
       :is="multiline ? 'textarea' : 'input'"
-      :class="inputClasses"
       :value="modelValue"
       @[updateEvent]="$emit('update:modelValue', $event.target.value)"
     />
@@ -53,22 +60,9 @@ export default {
     },
   },
 
-  data() {
-    return {
-      wrapperClasses: [],
-    };
-  },
-
   computed: {
     updateEvent() {
       return this.modelModifiers.lazy ? 'change' : 'input';
-    },
-
-    inputClasses() {
-      const clss = [];
-      if (this.small) clss.push('form-control_sm');
-      if (this.rounded) clss.push('form-control_rounded');
-      return clss;
     },
   },
 
@@ -76,22 +70,6 @@ export default {
     focus() {
       this.$refs.input.focus();
     },
-
-    computeWrapperClasses() {
-      const clss = [];
-      if (this.$slots['left-icon']) clss.push('input-group_icon-left');
-      if (this.$slots['right-icon']) clss.push('input-group_icon-right');
-      if (clss.length) clss.push('input-group_icon');
-      return clss;
-    },
-  },
-
-  created() {
-    this.wrapperClasses = this.computeWrapperClasses();
-  },
-
-  updated() {
-    this.wrapperClasses = this.computeWrapperClasses();
   },
 };
 </script>
