@@ -17,7 +17,7 @@ export default {
 
   data() {
     return {
-      sensors: null,
+      sensors: {},
     };
   },
 
@@ -42,7 +42,16 @@ export default {
     },
 
     setData(sensors) {
-      this.sensors = sensors;
+      let loc = null;
+      let rem = null;
+
+      for (let key in sensors) {
+        loc = this.sensors[key];
+        rem = sensors[key];
+
+        if (loc) loc.value = rem.value;
+        else this.sensors[key] = { ...rem };
+      }
     },
   },
 };
