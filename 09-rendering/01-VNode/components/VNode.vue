@@ -1,8 +1,12 @@
 <script>
-import { isVNode } from 'vue';
+import { isVNode, h } from 'vue';
 
 export default {
   name: 'VNode',
+
+  render() {
+    return this.vnode;
+  },
 
   props: {
     vnode: {
