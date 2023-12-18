@@ -1,15 +1,9 @@
 <script lang="jsx">
-// Предлагается решать задачу с использованием JSX, но вы можете использовать и чистые рендер-функции
-
-// import UiTab from './UiTab.vue';
+import UiTab from './UiTab.vue';
 
 export default {
   name: 'UiTabs',
-
-  props: {
-    active: String,
-  },
-
+  props: { active: String },
   emits: ['update:active'],
 
   methods: {
@@ -19,16 +13,24 @@ export default {
   },
 
   render() {
+    let slot = this.$slots.default?.() || [];
+    let tabs = slot.filter((n) => n.type === UiTab);
+    let actv = tabs.find((tab) => tab.props.name === this.active);
+
+    let tabNodes = tabs.map((tab) => {
+      let name = tab.props.name;
+      let title = tab.props.title;
+      let classes = ['tabs__tab'];
+      let handleClick = () => this.setActive(name);
+
+      if (tab === actv) classes.push('tabs__tab_active');
+      return <a class={classes} role="tab" onClick={handleClick}>{title}</a>;
+    });
+
     return (
       <div class="tabs">
-        <div class="tabs__nav" role="tablist">
-          <a class="tabs__tab" role="tab">Tab</a>
-          <a class="tabs__tab tabs__tab_active" role="tab">Active Tab</a>
-          <a class="tabs__tab" role="tab">Tab</a>
-        </div>
-        <div class="tabs__content">
-          ACTIVE TAB CONTENT
-        </div>
+        <div class="tabs__nav" role="tablist">{tabNodes}</div>
+        <div class="tabs__content">{actv?.children.default()}</div>
       </div>
     );
   },
