@@ -1,17 +1,11 @@
 <script>
-import { compile, h } from 'vue';
+import { compile } from 'vue';
 
 export default {
   name: 'TemplateRenderer',
 
-  render() {
-    return h({
-      components: this.components,
-      render: this.renderFunc,
-      props: ['bindings'],
-    }, {
-      bindings: this.bindings
-    });
+  render(...args) {
+    return this.renderFunc.apply(this, args);
   },
 
   props: {
@@ -28,6 +22,15 @@ export default {
     components: {
       type: [Object, Array],
       default: () => [],
+    },
+  },
+
+  watch: {
+    components: {
+      immediate: true,
+      handler() {
+        this.$options.components = this.components;
+      },
     },
   },
 
