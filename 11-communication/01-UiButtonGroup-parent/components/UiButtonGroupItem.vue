@@ -36,7 +36,7 @@
     },
 
     beforeMount() {
-      if (this.$parent?.$options?.name !== UiButtonGroup.name) {
+      if (this.$parent?.$?.type !== UiButtonGroup) {
         console.warn('Parrent shoud be UiButtonGroup component');
       }
     },
