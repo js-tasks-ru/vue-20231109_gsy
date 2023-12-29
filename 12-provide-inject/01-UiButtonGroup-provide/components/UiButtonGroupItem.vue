@@ -1,17 +1,26 @@
 <template>
-  <button class="button-group__button button-group__button_active" type="button" aria-selected="false">Button</button>
+  <button type="button" role="option" class="button-group__button"
+    :class="{'button-group__button_active': isSelected}"
+    :aria-selected="isSelected"
+    @click.prevent="updateSelectedValue(value)">
+    <slot />
+  </button>
 </template>
 
-<script>
-export default {
-  name: 'UiButtonGroupItem',
+<script setup>
+  import { computed, inject } from 'vue';
 
-  props: {
-    value: {
-      required: true,
-    },
-  },
-};
+  /** Входящее свойство компонента (только value). */
+  const prop = defineProps({ value: { required: true } });
+
+  /** Выбранный ключ в группе кнопок (вычисляемое). */
+  const selectedValue = inject('selectedValue');
+
+  /** Флаг: выбрана кнопка или нет. */
+  const isSelected = computed(() => prop.value === selectedValue.value);
+
+  /** Изменить текущий выбранный ключ в группе. */
+  const updateSelectedValue = inject('updateSelectedValue');
 </script>
 
 <style scoped>
