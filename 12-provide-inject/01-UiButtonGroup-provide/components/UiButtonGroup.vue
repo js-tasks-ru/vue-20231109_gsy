@@ -1,25 +1,23 @@
 <template>
   <div class="button-group" role="group">
-    <!-- Эти кнопки должны передаваться через слот -->
-    <button class="button-group__button button-group__button_active" type="button" aria-selected="true">Button1</button>
-    <button class="button-group__button" type="button" aria-selected="false">Button2</button>
-    <button class="button-group__button" type="button" aria-selected="false">Button3</button>
-    <!-- Эти кнопки должны передаваться через слот -->
+    <slot />
   </div>
 </template>
 
-<script>
-export default {
-  name: 'UiButtonGroup',
+<script setup>
+  import { provide, computed } from 'vue';
 
-  props: {
-    modelValue: {
-      required: true,
-    },
-  },
+  /** Событие с запросом на изменение значения модели. */
+  const emit = defineEmits(['update:modelValue']);
 
-  emits: ['update:modelValue'],
-};
+  /** Входящий параметр со значением модели. */
+  const prop = defineProps({ modelValue: { required: true } });
+
+  /** Выбранный ключ в группе (реактивное, вычисляемое). */
+  provide('selectedValue', computed(() => prop.modelValue));
+
+  /** Изменить выбранный в группе ключ (запрос на изменение). */
+  provide('updateSelectedValue', value => emit('update:modelValue', value));
 </script>
 
 <style scoped>
