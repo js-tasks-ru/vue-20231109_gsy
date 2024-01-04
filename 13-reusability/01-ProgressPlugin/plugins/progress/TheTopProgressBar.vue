@@ -2,75 +2,79 @@
   <div class="progress" :class="{ show, failed }" :style="{ width: currentProgress + '%' }"></div>
 </template>
 
-<script>
+<script setup>
 import { computed, ref } from 'vue';
 import { useGsap } from './useGsap.js';
 
+// Настройки поведения/отображения.
 const START_DELAY = 0.2;
 const MAX_PROGRESS = 95;
 const MAX_DURATION = 30;
 const FINISH_DURATION = 0.5;
 
-export default {
-  name: 'TheTopProgressBar',
+// Этапы прогресса.
+const loaders = new Set();
 
-  expose: ['start', 'finish', 'fail'],
+// Реактивное состояние.
+const currentProgress = ref(0);
+const failed = ref(false);
+const show = computed(() => currentProgress.value > 0);
 
-  setup() {
-    const currentProgress = ref(0);
-    const failed = ref(false);
-    const show = computed(() => currentProgress.value > 0);
+// Настрока анимации прогресс-бара.
+const progressTween = useGsap(currentProgress, {
+  duration: MAX_DURATION,
+  delay: START_DELAY,
+  ease: 'expo.out',
+});
 
-    const progressTween = useGsap(currentProgress, { duration: MAX_DURATION, delay: START_DELAY, ease: 'expo.out' });
-    const finishTween = useGsap(currentProgress, { duration: FINISH_DURATION });
+// Настройка завершения анимации прогресс-бара.
+const finishTween = useGsap(currentProgress, {
+  duration: FINISH_DURATION,
+});
 
-    let loaders = new Set();
+// Публичные методы компонента.
+defineExpose({
+  fail,
+  start,
+  finish,
+});
 
-    const reset = () => {
-      failed.value = false;
-      currentProgress.value = 0;
-    };
+/** Сбросить прогресс, вернуть в исходное состояние. */
+function reset() {
+  failed.value = false;
+  currentProgress.value = 0;
+}
 
-    const start = (loader) => {
-      if (loaders.size === 0) {
-        progressTween.start({ to: MAX_PROGRESS });
-      }
-      loaders.add(loader);
-    };
+/** Начать заполнение прогресс-бара. */
+function start(loader) {
+  if (!loaders.size) progressTween.start({ to: MAX_PROGRESS });
+  loaders.add(loader);
+}
 
-    const finish = (loader) => {
-      if (loaders.size === 0) {
-        return;
-      }
-      if (loader !== undefined) {
-        loaders.delete(loader);
-      } else {
-        loaders.clear();
-      }
-      if (loaders.size === 0) {
-        progressTween.getTween().kill();
-        if (show.value) {
-          progressTween.getTween().kill();
-          finishTween.start({ to: 100 }).then(reset);
-        }
-      }
-    };
+/** Завершить этап прогресса или прогресс целиком. */
+function finish(loader) {
+  if (!loaders.size) return;
 
-    const fail = () => {
-      failed.value = true;
-      finish();
-    };
+  if (loader === undefined) {
+    loaders.clear();
+  } else {
+    loaders.delete(loader);
+  }
 
-    return {
-      currentProgress,
-      failed,
-      show,
-      start,
-      finish,
-      fail,
-    };
-  },
-};
+  if (loaders.size === 0) {
+    progressTween.getTween().kill();
+    if (show.value) {
+      progressTween.getTween().kill();
+      finishTween.start({ to: 100 }).then(reset);
+    }
+  }
+}
+
+/** Завершить прогресс провалом. */
+function fail() {
+  failed.value = true;
+  finish();
+}
 </script>
 
 <style scoped>
